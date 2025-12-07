@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title ?: 'MédiLabo Solutions'}">MédiLabo Solutions</title>
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+    <!-- Tabler Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold">MédiLabo Solutions</h1>
+                <div class="flex items-center space-x-6">
+                    <!-- User info (only when authenticated) -->
+                    <span sec:authorize="isAuthenticated()" class="text-blue-100 flex items-center space-x-2">
+                        <i class="ti ti-user-circle text-xl"></i>
+                        <span sec:authentication="name" class="font-medium"></span>
+                    </span>
+                    
+                    <!-- Navigation links -->
+                    <a th:href="@{/}" class="hover:text-blue-200 transition flex items-center space-x-1">
+                        <i class="ti ti-home"></i>
+                        <span>Accueil</span>
+                    </a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/patients}" class="hover:text-blue-200 transition flex items-center space-x-1">
+                        <i class="ti ti-users"></i>
+                        <span>Patients</span>
+                    </a>
+                    
+                    <!-- Logout button (only when authenticated) -->
+                    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="inline-block">
+                        <button type="submit" 
+                                class="bg-red-500 hover:bg-red-600 p-2 rounded transition flex items-center justify-center"
+                                title="Se déconnecter">
+                            <i class="ti ti-logout text-xl"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        <div th:replace="${content}"></div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="py-6 bg-gray-800 text-white text-center mt-auto">
+        <p>&copy; 2025 MédiLabo Solutions - Tous droits réservés</p>
+    </footer>
+</body>
+</html>

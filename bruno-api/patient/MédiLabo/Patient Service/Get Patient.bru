@@ -1,0 +1,25 @@
+meta {
+  name: Get Patient
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{patientServiceUrl}}/patients/1
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: */*
+  ~Accept-Encoding: application/json
+}
+
+auth:bearer {
+  token: a
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

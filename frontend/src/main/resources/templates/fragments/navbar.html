@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Navbar Fragment</title>
+</head>
+<body>
+    <!-- Navigation Fragment -->
+    <nav th:fragment="navbar" class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold">MédiLabo Solutions</h1>
+                <div class="flex items-center space-x-6">
+                    <!-- User info (only when authenticated) -->
+                    <span sec:authorize="isAuthenticated()" class="text-blue-100 flex items-center space-x-2">
+                        <i class="ti ti-user-circle text-xl"></i>
+                        <span sec:authentication="name" class="font-medium"></span>
+                    </span>
+                    
+                    <!-- Navigation links -->
+                    <a th:href="@{/}" class="hover:text-blue-200 transition flex items-center space-x-1">
+                        <i class="ti ti-home"></i>
+                        <span>Accueil</span>
+                    </a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/patients}" class="hover:text-blue-200 transition flex items-center space-x-1">
+                        <i class="ti ti-users"></i>
+                        <span>Patients</span>
+                    </a>
+                    
+                    <!-- Logout button (only when authenticated) -->
+                    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="inline-block">
+                        <button type="submit" 
+                                class="bg-red-500 hover:bg-red-600 p-2 rounded transition flex items-center justify-center"
+                                title="Se déconnecter">
+                            <i class="ti ti-logout text-xl"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>

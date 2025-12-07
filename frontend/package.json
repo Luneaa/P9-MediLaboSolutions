@@ -1,0 +1,12 @@
+{
+  "name": "medilabo-frontend",
+  "version": "1.0.0",
+  "description": "MédiLabo Frontend with Tailwind CSS",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./src/main/resources/static/css/input.css -o ./src/main/resources/static/css/output.css",
+    "watch:css": "npx tailwindcss -i ./src/main/resources/static/css/input.css -o ./src/main/resources/static/css/output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}
