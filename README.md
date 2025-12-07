@@ -16,7 +16,7 @@ Microservice de gestion des données patients
 - **Base de données** : MySQL
 - **Sécurité** : Spring Security avec authentification Basic
 - **API REST** : Endpoints pour CRUD des patients
-- **Port** : 8081 (par défaut)
+- **Port** : 9090 (par défaut)
 
 ### 🔹 `gateway`
 Gateway API donnant accès aux microservices
@@ -35,8 +35,7 @@ Application web frontend
   - Authentification utilisateur
   - Liste des patients
   - Interface responsive
-  - Architecture avec fragments Thymeleaf réutilisables
-- **Port** : 8082 (par défaut)
+- **Port** : 8081 (par défaut)
 
 ### 🔹 `bruno-api`
 Collection de requêtes API pour tests
@@ -73,9 +72,9 @@ Collection de requêtes API pour tests
    ```
 
 4. **Accéder à l'application**
-   - Frontend : http://localhost:8082
+   - Frontend : http://localhost:8081
    - Gateway : http://localhost:8080
-   - Service Patient (direct) : http://localhost:8081
+   - Service Patient (direct) : http://localhost:9090
 
 ## 🔐 Authentification
 
@@ -112,11 +111,11 @@ P9/
 ```
 Client Browser
     ↓
-Frontend (Port 8082)
+Frontend (Port 8081)
     ↓
 Gateway (Port 8080)
     ↓
-Patient Service (Port 8081)
+Patient Service (Port 9090)
     ↓
 MySQL Database
 ```
