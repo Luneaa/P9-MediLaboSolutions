@@ -33,4 +33,25 @@ public class PatientService {
     public Patient addPatient(Patient patient) {
         return patientRepository.save(patient);
     }
+
+    public Patient updatePatient(int id, Patient patient) {
+        // Verify patient exists
+        Patient existingPatient = getPatientById(id);
+        
+        // Update fields
+        existingPatient.setNom(patient.getNom());
+        existingPatient.setPrenom(patient.getPrenom());
+        existingPatient.setDateNaissance(patient.getDateNaissance());
+        existingPatient.setGenre(patient.getGenre());
+        existingPatient.setAdresse(patient.getAdresse());
+        existingPatient.setTelephone(patient.getTelephone());
+        
+        return patientRepository.save(existingPatient);
+    }
+
+    public void deletePatient(int id) {
+        // Verify patient exists
+        Patient patient = getPatientById(id);
+        patientRepository.delete(patient);
+    }
 }

@@ -53,4 +53,36 @@ public class PatientService {
                 .bodyToMono(Patient.class)
                 .block();
     }
+
+    public Patient createPatient(Patient patient) {
+        log.debug("Creating new patient: {} {}", patient.getPrenom(), patient.getNom());
+        return webClient.post()
+                .uri("/patients")
+                .header("Authorization", getBasicAuthHeader())
+                .bodyValue(patient)
+                .retrieve()
+                .bodyToMono(Patient.class)
+                .block();
+    }
+
+    public Patient updatePatient(Integer id, Patient patient) {
+        log.debug("Updating patient with id: {}", id);
+        return webClient.put()
+                .uri("/patients/{id}", id)
+                .header("Authorization", getBasicAuthHeader())
+                .bodyValue(patient)
+                .retrieve()
+                .bodyToMono(Patient.class)
+                .block();
+    }
+
+    public void deletePatient(Integer id) {
+        log.debug("Deleting patient with id: {}", id);
+        webClient.delete()
+                .uri("/patients/{id}", id)
+                .header("Authorization", getBasicAuthHeader())
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+    }
 }

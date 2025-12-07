@@ -5,10 +5,10 @@
 </head>
 <body>
     <!-- Navigation Fragment -->
-    <nav th:fragment="navbar" class="bg-blue-600 text-white shadow-lg">
+    <nav th:fragment="navbar" class="bg-primary text-white shadow-lg">
         <div class="container mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold">MédiLabo Solutions</h1>
+                <a th:href="@{/}" class="text-2xl font-bold hover:text-blue-200 transition cursor-pointer">MédiLabo Solutions</a>
                 <div class="flex items-center space-x-6">
                     <!-- User info (only when authenticated) -->
                     <span sec:authorize="isAuthenticated()" class="text-blue-100 flex items-center space-x-2">
@@ -17,10 +17,6 @@
                     </span>
                     
                     <!-- Navigation links -->
-                    <a th:href="@{/}" class="hover:text-blue-200 transition flex items-center space-x-1">
-                        <i class="ti ti-home"></i>
-                        <span>Accueil</span>
-                    </a>
                     <a sec:authorize="isAuthenticated()" th:href="@{/patients}" class="hover:text-blue-200 transition flex items-center space-x-1">
                         <i class="ti ti-users"></i>
                         <span>Patients</span>

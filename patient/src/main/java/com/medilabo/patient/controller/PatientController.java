@@ -30,4 +30,14 @@ public class PatientController {
     public Patient createPatient(@RequestBody Patient patient) {
         return patientService.addPatient(patient);
     }
+
+    @PutMapping("/{id}")
+    public Patient updatePatient(@PathVariable("id") Integer id, @RequestBody Patient patient) {
+        return patientService.updatePatient(id, patient);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletePatient(@PathVariable("id") Integer id) {
+        patientService.deletePatient(id);
+    }
 }

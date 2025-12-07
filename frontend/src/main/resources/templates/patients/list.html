@@ -8,8 +8,15 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8 flex-grow">
         <!-- Header -->
-        <div class="mb-8">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Gestion des dossiers patients</h2>
+        <div class="mb-8 flex items-center justify-between">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Gestion des dossiers patients</h2>
+                <p class="text-gray-600">Liste de tous les patients enregistrés</p>
+            </div>
+            <a th:href="@{/patients/new}" class="inline-flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition">
+                <i class="ti ti-user-plus"></i>
+                <span>Nouveau patient</span>
+            </a>
         </div>
 
         <!-- Error Message -->
@@ -45,7 +52,9 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <tr th:each="patient : ${patients}" class="hover:bg-gray-50 transition">
+                        <tr th:each="patient : ${patients}" 
+                            class="hover:bg-gray-50 transition cursor-pointer"
+                            th:onclick="|window.location.href='@{/patients/{id}(id=${patient.id})}'|">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${patient.nom}">
                                 Dupont
                             </td>
@@ -66,16 +75,16 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${patient.telephone ?: '-'}">
                                 -
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3">
-                                <a href="#" class="text-blue-600 hover:text-blue-900 inline-flex items-center space-x-1" title="Voir les détails du patient">
-                                    <i class="ti ti-eye"></i>
-                                </a>
-                                <a href="#" class="text-green-600 hover:text-green-900 inline-flex items-center space-x-1" title="Modifier le patient">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3" onclick="event.stopPropagation()">
+                                <a th:href="@{/patients/{id}/edit(id=${patient.id})}" class="text-green-600 hover:text-green-900 inline-flex items-center space-x-1" title="Modifier le patient">
                                     <i class="ti ti-edit"></i>
                                 </a>
-                                <a href="#" class="text-red-600 hover:text-red-900 inline-flex items-center space-x-1" title="Supprimer le patient">
-                                    <i class="ti ti-trash"></i>
-                                </a>
+                                <form th:action="@{/patients/{id}/delete(id=${patient.id})}" method="post" class="inline-block delete-form" 
+                                      th:data-patient-name="|${patient.prenom} ${patient.nom}|">
+                                    <button type="submit" class="text-red-600 hover:text-red-900 inline-flex items-center space-x-1" title="Supprimer le patient">
+                                        <i class="ti ti-trash"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     </tbody>
@@ -88,24 +97,28 @@
                 <h3 class="mt-4 text-sm font-medium text-gray-900">Aucun patient</h3>
                 <p class="mt-1 text-sm text-gray-500">Commencez par ajouter un nouveau patient.</p>
                 <div class="mt-6">
-                    <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <a th:href="@{/patients/new}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                         <i class="ti ti-plus mr-2"></i>
                         Nouveau Patient
-                    </button>
+                    </a>
                 </div>
             </div>
-        </div>
-
-        <!-- Add Patient Button (when there are patients) -->
-        <div th:if="${patients != null and !patients.isEmpty()}" class="mt-6">
-            <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                <i class="ti ti-plus mr-2"></i>
-                Ajouter un Patient
-            </button>
         </div>
     </main>
 
     <!-- Footer -->
     <footer th:replace="~{fragments/footer :: footer}"></footer>
+    
+    <!-- Delete confirmation script -->
+    <script>
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const patientName = this.dataset.patientName;
+                if (!confirm(`Êtes-vous sûr de vouloir supprimer le patient ${patientName} ?`)) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
