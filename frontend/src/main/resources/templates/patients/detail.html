@@ -104,7 +104,7 @@
                                     <span class="text-sm font-medium text-gray-600">Adresse :</span>
                                 </div>
                                 <div class="w-2/3">
-                                    <span class="text-sm text-gray-900" th:text="${patient.adresse ?: 'Non renseignée'}">123 Rue de la Paix</span>
+                                    <span class="text-sm text-gray-900" th:text="${patient.adresse ?: '-'}">123 Rue de la Paix</span>
                                 </div>
                             </div>
 
@@ -113,7 +113,7 @@
                                     <span class="text-sm font-medium text-gray-600">Téléphone :</span>
                                 </div>
                                 <div class="w-2/3">
-                                    <span class="text-sm text-gray-900" th:text="${patient.telephone ?: 'Non renseigné'}">01 23 45 67 89</span>
+                                    <span class="text-sm text-gray-900" th:text="${patient.telephone ?: '-'}">01 23 45 67 89</span>
                                 </div>
                             </div>
                         </div>
