@@ -1,0 +1,24 @@
+meta {
+  name: Update Note
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{notesServiceUrl}}/notes/693e96806be81a3a11c3541d
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "idPatient": 1,
+    "idMedecin": 1,
+    "contenu": "Douleurs chroniques au niveau du bas du dos. Et rougeur sur le visage."
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

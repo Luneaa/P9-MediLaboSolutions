@@ -1,0 +1,16 @@
+meta {
+  name: Get Note by ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{notesServiceUrl}}/notes/693e96806be81a3a11c3541d
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

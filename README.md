@@ -18,6 +18,14 @@ Microservice de gestion des données patients
 - **API REST** : Endpoints pour CRUD des patients
 - **Port** : 9090 (par défaut)
 
+### 🔹 `notes`
+Microservice de gestion des notes médicales
+- **Technologie** : Spring Boot 3.5.7
+- **Base de données** : MongoDB (NoSQL)
+- **Sécurité** : Spring Security avec authentification Basic
+- **API REST** : Endpoints pour la gestion des notes des médecins
+- **Port** : 9091 (par défaut)
+
 ### 🔹 `gateway`
 Gateway API donnant accès aux microservices
 - **Technologie** : Spring Cloud Gateway
@@ -49,32 +57,43 @@ Collection de requêtes API pour tests
 - Java 17+
 - Maven 3.6+
 - MySQL 8.0+
+- MongoDB 4.4+
 - Node.js (pour Tailwind CSS)
 
 ### Lancement des services
 
-1. **Démarrer le microservice Patient**
+1. **Démarrer MongoDB**
+   Assurez-vous que MongoDB est en cours d'exécution sur le port 27017
+
+2. **Démarrer le microservice Patient**
    ```bash
    cd patient
    mvn spring-boot:run
    ```
 
-2. **Démarrer la Gateway**
+3. **Démarrer le microservice Notes**
+   ```bash
+   cd notes
+   mvn spring-boot:run
+   ```
+
+4. **Démarrer la Gateway**
    ```bash
    cd gateway
    mvn spring-boot:run
    ```
 
-3. **Démarrer le Frontend**
+5. **Démarrer le Frontend**
    ```bash
    cd frontend
    mvn spring-boot:run
    ```
 
-4. **Accéder à l'application**
+6. **Accéder à l'application**
    - Frontend : http://localhost:8081
    - Gateway : http://localhost:8080
    - Service Patient (direct) : http://localhost:9090
+   - Service Notes (direct) : http://localhost:9091
 
 ## 🔐 Authentification
 
@@ -91,7 +110,7 @@ Le système utilise une authentification en mémoire avec les comptes suivants :
 
 - **Backend** : Spring Boot 3.5.7, Spring Security, Spring Cloud Gateway
 - **Frontend** : Thymeleaf, Tailwind CSS, Tabler Icons
-- **Base de données** : MySQL
+- **Bases de données** : MySQL (patients), MongoDB (notes médicales)
 - **Build** : Maven
 - **API Testing** : Bruno
 
@@ -99,7 +118,8 @@ Le système utilise une authentification en mémoire avec les comptes suivants :
 
 ```
 P9/
-├── patient/           # Microservice de gestion des patients
+├── patient/           # Microservice de gestion des patients (MySQL)
+├── notes/             # Microservice de gestion des notes médicales (MongoDB)
 ├── gateway/           # Gateway API
 ├── frontend/          # Application web frontend
 ├── bruno-api/         # Collections de requêtes API
@@ -115,9 +135,8 @@ Frontend (Port 8081)
     ↓
 Gateway (Port 8080)
     ↓
-Patient Service (Port 9090)
-    ↓
-MySQL Database
+    ├─→ Patient Service (Port 9090) → MySQL Database
+    └─→ Notes Service (Port 9091) → MongoDB Database
 ```
 
 ## 📝 Licence

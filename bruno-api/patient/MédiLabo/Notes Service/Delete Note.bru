@@ -1,0 +1,16 @@
+meta {
+  name: Delete Note
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{notesServiceUrl}}/notes/693e96e46be81a3a11c35420
+  body: json
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

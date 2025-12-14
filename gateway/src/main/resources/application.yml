@@ -13,3 +13,9 @@ spring:
             - Path=/patients/**
           filters:
             - StripPrefix=0
+        - id: notes-service
+          uri: http://localhost:9091
+          predicates:
+            - Path=/notes/**
+          filters:
+            - StripPrefix=0
