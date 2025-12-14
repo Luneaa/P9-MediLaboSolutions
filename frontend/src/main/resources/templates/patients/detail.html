@@ -138,45 +138,101 @@
         </div>
 
         <!-- Medical Notes Section -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div th:if="${patient}" class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="bg-gray-100 px-6 py-4 border-b">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-semibold text-gray-800 flex items-center space-x-2">
-                        <i class="ti ti-notes"></i>
-                        <span>Notes du médecin</span>
-                    </h3>
-                    <button type="button" class="inline-flex items-center space-x-2 px-3 py-1.5 bg-primary text-white rounded-md hover:bg-primary-hover transition text-sm">
-                        <i class="ti ti-plus"></i>
-                        <span>Ajouter une note</span>
-                    </button>
-                </div>
+                <h3 class="text-xl font-semibold text-gray-800 flex items-center space-x-2">
+                    <i class="ti ti-notes"></i>
+                    <span>Notes du médecin</span>
+                </h3>
             </div>
 
             <div class="p-6">
-                <!-- Notes will be implemented later -->
-                <div class="text-center py-8 text-gray-500">
-                    <i class="ti ti-notes-off text-5xl mb-3"></i>
-                    <p class="text-sm">Aucune note médicale pour le moment</p>
-                    <p class="text-xs mt-2">Les notes du médecin seront disponibles prochainement</p>
-                </div>
-
-                <!-- Note Input Area (for future implementation) -->
-                <div class="hidden mt-4">
-                    <label for="newNote" class="block text-sm font-medium text-gray-700 mb-2">
-                        Ajouter une nouvelle note
+                <!-- Formulaire d'ajout de note -->
+                <form th:action="@{/patients/{id}/notes(id=${patient.id})}" method="post" class="mb-6">
+                    <label for="contenu" class="block text-sm font-medium text-gray-700 mb-2">
+                        Observations médicales
                     </label>
                     <textarea 
-                        id="newNote" 
-                        rows="6" 
+                        id="contenu" 
+                        name="contenu"
+                        rows="4" 
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                        placeholder="Saisissez les observations médicales..."></textarea>
-                    <div class="mt-3 flex justify-end space-x-2">
-                        <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">
-                            Annuler
+                        placeholder="Saisissez les observations médicales..."
+                        required></textarea>
+                    <div class="mt-3 flex justify-end">
+                        <button type="submit" class="inline-flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-hover transition">
+                            <i class="ti ti-plus"></i>
+                            <span>Ajouter la note</span>
                         </button>
-                        <button type="button" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-hover transition">
-                            Enregistrer
-                        </button>
+                    </div>
+                </form>
+
+                <!-- Historique des notes -->
+                <div class="border-t pt-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Historique des notes</h4>
+                    
+                    <!-- Empty state si aucune note -->
+                    <div th:if="${notes == null || notes.isEmpty()}" class="text-center py-8 text-gray-500">
+                        <i class="ti ti-notes-off text-5xl mb-3"></i>
+                        <p class="text-sm">Aucune note médicale pour le moment</p>
+                        <p class="text-xs mt-2">Les notes ajoutées apparaîtront ici</p>
+                    </div>
+
+                    <!-- Liste des notes -->
+                    <div th:if="${notes != null && !notes.isEmpty()}" class="space-y-4">
+                        <div th:each="note, iterStat : ${notes}" class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <div class="flex items-start justify-between mb-2">
+                                <div class="flex items-center space-x-2 text-sm text-gray-600">
+                                    <i class="ti ti-calendar"></i>
+                                    <span th:text="${#temporals.format(note.date, 'dd/MM/yyyy à HH:mm')}">01/01/2024 à 10:00</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button type="button" 
+                                            th:onclick="|toggleEditNote('note-${iterStat.index}')|"
+                                            class="text-blue-600 hover:text-blue-800 transition" 
+                                            title="Modifier la note">
+                                        <i class="ti ti-edit"></i>
+                                    </button>
+                                    <form th:action="@{/patients/{patientId}/notes/{noteId}/delete(patientId=${patient.id},noteId=${note.id})}" 
+                                          method="post" 
+                                          class="delete-note-form inline"
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette note ?');">
+                                        <button type="submit" class="text-red-600 hover:text-red-800 transition" title="Supprimer la note">
+                                            <i class="ti ti-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <!-- Affichage normal de la note -->
+                            <div th:id="|note-view-${iterStat.index}|">
+                                <p class="text-gray-800 whitespace-pre-wrap" th:text="${note.contenu}">Contenu de la note</p>
+                            </div>
+                            
+                            <!-- Formulaire d'édition (caché par défaut) -->
+                            <div th:id="|note-edit-${iterStat.index}|" class="hidden">
+                                <form th:action="@{/patients/{patientId}/notes/{noteId}/edit(patientId=${patient.id},noteId=${note.id})}" 
+                                      method="post">
+                                    <textarea 
+                                        name="contenu"
+                                        rows="4" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                                        required
+                                        th:text="${note.contenu}"></textarea>
+                                    <div class="mt-2 flex justify-end space-x-2">
+                                        <button type="button" 
+                                                th:onclick="|toggleEditNote('note-${iterStat.index}')|"
+                                                class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition text-sm">
+                                            Annuler
+                                        </button>
+                                        <button type="submit" 
+                                                class="px-3 py-1.5 bg-primary text-white rounded-md hover:bg-primary-hover transition text-sm">
+                                            Enregistrer
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -196,6 +252,17 @@
                     e.preventDefault();
                 }
             });
+        }
+
+        // Toggle entre affichage et édition de note
+        function toggleEditNote(noteId) {
+            const viewElement = document.getElementById('note-view-' + noteId.split('-')[1]);
+            const editElement = document.getElementById('note-edit-' + noteId.split('-')[1]);
+            
+            if (viewElement && editElement) {
+                viewElement.classList.toggle('hidden');
+                editElement.classList.toggle('hidden');
+            }
         }
     </script>
 </body>
