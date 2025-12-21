@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  mysql:
+    volumes:
+      - ./docker-init/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  mongo:
+    volumes:
+      - ./docker-init/mongo/init.js:/docker-entrypoint-initdb.d/init.js

@@ -35,6 +35,28 @@ Le fichier `docker-compose.yml` orchestre les services suivants :
 
 3.  Attendez que tous les services soient démarrés. Vous verrez des logs défiler.
 
+## Gestion des Données de Test
+
+Le projet inclut des scripts pour pré-remplir les bases de données avec des patients et des notes de test.
+
+### Option 1 : Initialiser avec les données (Par défaut)
+
+Par défaut, Docker Compose utilise le fichier `docker-compose.override.yml` qui contient la configuration pour charger les données de test.
+
+```bash
+docker-compose up --build
+```
+
+### Option 2 : Initialiser avec des bases vides
+
+Pour démarrer sans charger les données de test, il suffit d'ignorer le fichier override en spécifiant uniquement le fichier de base :
+
+```bash
+docker-compose -f docker-compose.yml up --build
+```
+
+*Note : Si vous avez déjà des données dans les volumes, n'oubliez pas de faire un `docker-compose down -v` avant de changer de mode.*
+
 ## Accéder à l'application
 
 Une fois les services démarrés :
