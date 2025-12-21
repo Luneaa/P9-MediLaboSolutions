@@ -1,0 +1,100 @@
+services:
+  # Databases
+  mysql:
+    image: mysql:8.0
+    container_name: medilabo-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: LesMotsdepasses38!
+      MYSQL_DATABASE: medilabo
+    ports:
+      - "3307:3306" # Mapped to 3307 to avoid conflict with local MySQL
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - medilabo-network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  mongo:
+    image: mongo:latest
+    container_name: medilabo-mongo
+    ports:
+      - "27018:27017" # Mapped to 27018 to avoid conflict with local Mongo
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - medilabo-network
+
+  # Microservices
+  patient-service:
+    build: ./patient
+    container_name: medilabo-patient
+    ports:
+      - "9090:9090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/medilabo
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=LesMotsdepasses38!
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - medilabo-network
+
+  notes-service:
+    build: ./notes
+    container_name: medilabo-notes
+    ports:
+      - "9091:9091"
+    environment:
+      - SPRING_DATA_MONGODB_HOST=mongo
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=medilabo_notes
+    depends_on:
+      - mongo
+    networks:
+      - medilabo-network
+
+  evaluation-service:
+    build: ./evaluation-risque
+    container_name: medilabo-evaluation
+    ports:
+      - "9092:9092"
+    networks:
+      - medilabo-network
+
+  gateway-service:
+    build: ./gateway
+    container_name: medilabo-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - patient-service
+      - notes-service
+      - evaluation-service
+    networks:
+      - medilabo-network
+
+  frontend-service:
+    build: ./frontend
+    container_name: medilabo-frontend
+    ports:
+      - "8081:8081"
+    environment:
+      - GATEWAY_URL=http://gateway-service:8080
+    depends_on:
+      - gateway-service
+    networks:
+      - medilabo-network
+
+networks:
+  medilabo-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  mongo_data:

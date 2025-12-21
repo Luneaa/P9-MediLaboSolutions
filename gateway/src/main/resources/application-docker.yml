@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: patient-service
+          uri: http://patient-service:9090
+          predicates:
+            - Path=/patients/**
+          filters:
+            - StripPrefix=0
+        - id: notes-service
+          uri: http://notes-service:9091
+          predicates:
+            - Path=/notes/**
+          filters:
+            - StripPrefix=0
+        - id: evaluation-service
+          uri: http://evaluation-service:9092
+          predicates:
+            - Path=/assess/**
+          filters:
+            - StripPrefix=0

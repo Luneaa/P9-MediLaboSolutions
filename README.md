@@ -6,6 +6,10 @@ Système de gestion des dossiers patients - Architecture microservices
 
 MédiLabo Solutions est une application de gestion des dossiers patients construite avec une architecture microservices. Le système permet de gérer les informations des patients de manière sécurisée et efficace.
 
+## 🐳 Docker
+
+Pour lancer l'application avec Docker, consultez le guide : [DOCKER_INSTRUCTIONS.md](DOCKER_INSTRUCTIONS.md).
+
 ## 🏗️ Architecture
 
 Le projet est composé de plusieurs modules :
