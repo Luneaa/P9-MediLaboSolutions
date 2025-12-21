@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 @Data
 @NoArgsConstructor
@@ -17,4 +18,11 @@ public class Patient {
     private Genre genre;
     private String adresse;
     private String telephone;
+
+    public int getAge() {
+        if (dateNaissance == null) {
+            return 0;
+        }
+        return Period.between(dateNaissance, LocalDate.now()).getYears();
+    }
 }

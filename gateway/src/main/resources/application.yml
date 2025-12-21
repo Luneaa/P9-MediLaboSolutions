@@ -19,3 +19,9 @@ spring:
             - Path=/notes/**
           filters:
             - StripPrefix=0
+        - id: evaluation-service
+          uri: http://localhost:9092
+          predicates:
+            - Path=/assess/**
+          filters:
+            - StripPrefix=0

@@ -1,8 +1,10 @@
 package com.medilabo.frontend.controller;
 
+import com.medilabo.frontend.dto.RiskAssessmentRequest;
 import com.medilabo.frontend.model.Patient;
 import com.medilabo.frontend.service.NoteService;
 import com.medilabo.frontend.service.PatientService;
+import com.medilabo.frontend.service.RiskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -21,10 +24,12 @@ public class PatientController {
 
     private final PatientService patientService;
     private final NoteService noteService;
+    private final RiskService riskService;
 
-    public PatientController(PatientService patientService, NoteService noteService) {
+    public PatientController(PatientService patientService, NoteService noteService, RiskService riskService) {
         this.patientService = patientService;
         this.noteService = noteService;
+        this.riskService = riskService;
     }
 
     @GetMapping
@@ -69,15 +74,34 @@ public class PatientController {
             log.info("Retrieved patient with id: {}", id);
             
             // Charger les notes du patient
+            List<com.medilabo.frontend.model.Note> notes = List.of();
             try {
-                List<com.medilabo.frontend.model.Note> notes = noteService.getNotesByPatientId(id);
+                notes = noteService.getNotesByPatientId(id);
                 model.addAttribute("notes", notes);
                 log.info("Retrieved {} notes for patient {}", notes.size(), id);
             } catch (Exception noteException) {
                 log.error("Error fetching notes for patient {}", id, noteException);
                 // Continuer même si les notes ne peuvent pas être récupérées
-                model.addAttribute("notes", List.of());
+                model.addAttribute("notes", notes);
             }
+
+            // Evaluer le risque
+            try {
+                RiskAssessmentRequest riskRequest = new RiskAssessmentRequest();
+                riskRequest.setBirthDate(patient.getDateNaissance());
+                riskRequest.setGender(patient.getGenre().name());
+                riskRequest.setNotes(notes.stream()
+                        .map(com.medilabo.frontend.model.Note::getContenu)
+                        .collect(Collectors.toList()));
+                
+                String riskLevel = riskService.assessRisk(riskRequest);
+                model.addAttribute("riskLevel", riskLevel);
+                log.info("Calculated risk level: {}", riskLevel);
+            } catch (Exception riskException) {
+                log.error("Error calculating risk for patient {}", id, riskException);
+                model.addAttribute("riskLevel", "N/A");
+            }
+
         } catch (Exception e) {
             log.error("Error fetching patient with id: {}", id, e);
             model.addAttribute("error", "Erreur lors de la récupération du patient");

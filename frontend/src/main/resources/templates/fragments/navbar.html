@@ -8,19 +8,12 @@
     <nav th:fragment="navbar" class="bg-primary text-white shadow-lg">
         <div class="container mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
-                <a th:href="@{/}" class="text-2xl font-bold hover:text-blue-200 transition cursor-pointer">MédiLabo Solutions</a>
+                <a th:href="@{/patients}" class="text-2xl font-bold hover:text-blue-200 transition cursor-pointer">MédiLabo Solutions</a>
                 <div class="flex items-center space-x-6">
                     <!-- User info (only when authenticated) -->
                     <span sec:authorize="isAuthenticated()" class="text-blue-100 flex items-center space-x-2">
-                        <i class="ti ti-user-circle text-xl"></i>
                         <span sec:authentication="name" class="font-medium"></span>
                     </span>
-                    
-                    <!-- Navigation links -->
-                    <a sec:authorize="isAuthenticated()" th:href="@{/patients}" class="hover:text-blue-200 transition flex items-center space-x-1">
-                        <i class="ti ti-users"></i>
-                        <span>Patients</span>
-                    </a>
                     
                     <!-- Logout button (only when authenticated) -->
                     <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="inline-block">

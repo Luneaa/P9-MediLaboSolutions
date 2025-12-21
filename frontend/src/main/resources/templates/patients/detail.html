@@ -29,7 +29,6 @@
         <div th:if="${patient}" class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
             <div class="bg-primary text-white px-6 py-4">
                 <div class="flex items-center space-x-3">
-                    <i class="ti ti-user-circle text-4xl"></i>
                     <div>
                         <h3 class="text-2xl font-bold" th:text="${patient.prenom + ' ' + patient.nom}">Jean Dupont</h3>
                     </div>
@@ -41,7 +40,7 @@
                     <!-- Personal Information -->
                     <div class="space-y-4">
                         <h4 class="text-lg font-semibold text-gray-800 border-b pb-2 flex items-center space-x-2">
-                            <i class="ti ti-id-badge"></i>
+                            <i class="ti ti-user"></i>
                             <span>Informations personnelles</span>
                         </h4>
                         
@@ -70,6 +69,7 @@
                                 </div>
                                 <div class="w-2/3">
                                     <span class="text-sm text-gray-900" th:text="${#temporals.format(patient.dateNaissance, 'dd/MM/yyyy')}">01/01/1980</span>
+                                    <span class="text-sm text-gray-500 ml-1" th:text="'(' + ${patient.age} + ' ans)'">(45 ans)</span>
                                 </div>
                             </div>
 
@@ -120,19 +120,36 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="mt-6 pt-6 border-t flex justify-end space-x-3">
-                    <a th:href="@{/patients/{id}/edit(id=${patient.id})}" class="inline-flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition">
-                        <i class="ti ti-edit"></i>
-                        <span>Modifier</span>
-                    </a>
-                    <form th:action="@{/patients/{id}/delete(id=${patient.id})}" method="post" class="inline-block delete-form"
-                          th:data-patient-name="|${patient.prenom} ${patient.nom}|">
-                        <button type="submit" class="inline-flex items-center space-x-2 px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger-hover transition">
-                            <i class="ti ti-trash"></i>
-                            <span>Supprimer</span>
-                        </button>
-                    </form>
+                <!-- Action Buttons and Risk Level -->
+                <div class="mt-6 pt-6 border-t flex items-center justify-between">
+                    <!-- Risk Level Display -->
+                    <div class="flex items-center space-x-2" th:if="${riskLevel}">
+                        <span class="text-sm font-medium text-gray-600">Risque de diabète :</span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold"
+                              th:classappend="${riskLevel == 'NONE' ? 'bg-green-100 text-green-800' : 
+                                             (riskLevel == 'BORDERLINE' ? 'bg-yellow-100 text-yellow-800' : 
+                                             (riskLevel == 'IN_DANGER' ? 'bg-orange-100 text-orange-800' : 
+                                             (riskLevel == 'EARLY_ONSET' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800')))}"
+                              th:text="${riskLevel == 'NONE' ? 'Aucun risque' : 
+                                       (riskLevel == 'BORDERLINE' ? 'Risque limité' : 
+                                       (riskLevel == 'IN_DANGER' ? 'Danger' : 
+                                       (riskLevel == 'EARLY_ONSET' ? 'Apparition précoce' : riskLevel)))}">
+                            None
+                        </span>
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <a th:href="@{/patients/{id}/edit(id=${patient.id})}" class="inline-flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition">
+                            <i class="ti ti-edit"></i>
+                            <span>Modifier</span>
+                        </a>
+                        <form th:action="@{/patients/{id}/delete(id=${patient.id})}" method="post" class="inline-block delete-form"
+                              th:data-patient-name="|${patient.prenom} ${patient.nom}|">
+                            <button type="submit" class="inline-flex items-center space-x-2 px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger-hover transition">
+                                <i class="ti ti-trash"></i>
+                                <span>Supprimer</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -141,7 +158,7 @@
         <div th:if="${patient}" class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="bg-gray-100 px-6 py-4 border-b">
                 <h3 class="text-xl font-semibold text-gray-800 flex items-center space-x-2">
-                    <i class="ti ti-notes"></i>
+                    <i class="ti ti-stethoscope"></i>
                     <span>Notes du médecin</span>
                 </h3>
             </div>
@@ -217,6 +234,7 @@
                                         name="contenu"
                                         rows="4" 
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                                        placeholder="Saisissez les observations médicales..."
                                         required
                                         th:text="${note.contenu}"></textarea>
                                     <div class="mt-2 flex justify-end space-x-2">

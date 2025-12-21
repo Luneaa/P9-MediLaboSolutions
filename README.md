@@ -26,6 +26,14 @@ Microservice de gestion des notes médicales
 - **API REST** : Endpoints pour la gestion des notes des médecins
 - **Port** : 9091 (par défaut)
 
+### 🔹 `evaluation-risque`
+Microservice d'évaluation des risques diabète
+- **Technologie** : Spring Boot 3.5.7
+- **Base de données** : Aucune
+- **Sécurité** : Spring Security avec authentification Basic
+- **API REST** : Endpoint pour le calcul du niveau de risque
+- **Port** : 9092 (par défaut)
+
 ### 🔹 `gateway`
 Gateway API donnant accès aux microservices
 - **Technologie** : Spring Cloud Gateway
@@ -77,23 +85,30 @@ Collection de requêtes API pour tests
    mvn spring-boot:run
    ```
 
-4. **Démarrer la Gateway**
+4. **Démarrer le microservice Evaluation Risque**
+   ```bash
+   cd evaluation-risque
+   mvn spring-boot:run
+   ```
+
+5. **Démarrer la Gateway**
    ```bash
    cd gateway
    mvn spring-boot:run
    ```
 
-5. **Démarrer le Frontend**
+6. **Démarrer le Frontend**
    ```bash
    cd frontend
    mvn spring-boot:run
    ```
 
-6. **Accéder à l'application**
+7. **Accéder à l'application**
    - Frontend : http://localhost:8081
    - Gateway : http://localhost:8080
    - Service Patient (direct) : http://localhost:9090
    - Service Notes (direct) : http://localhost:9091
+   - Service Evaluation Risque (direct) : http://localhost:9092
 
 ## 🔐 Authentification
 
@@ -120,6 +135,7 @@ Le système utilise une authentification en mémoire avec les comptes suivants :
 P9/
 ├── patient/           # Microservice de gestion des patients (MySQL)
 ├── notes/             # Microservice de gestion des notes médicales (MongoDB)
+├── evaluation-risque/ # Microservice d'évaluation des risques
 ├── gateway/           # Gateway API
 ├── frontend/          # Application web frontend
 ├── bruno-api/         # Collections de requêtes API
@@ -136,7 +152,8 @@ Frontend (Port 8081)
 Gateway (Port 8080)
     ↓
     ├─→ Patient Service (Port 9090) → MySQL Database
-    └─→ Notes Service (Port 9091) → MongoDB Database
+    ├─→ Notes Service (Port 9091) → MongoDB Database
+    └─→ Evaluation Service (Port 9092)
 ```
 
 ## 📝 Licence
