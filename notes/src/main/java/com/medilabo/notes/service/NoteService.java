@@ -4,6 +4,8 @@ import com.medilabo.notes.dto.NoteRequestDTO;
 import com.medilabo.notes.dto.NoteResponseDTO;
 import com.medilabo.notes.model.Note;
 import com.medilabo.notes.repository.NoteRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,6 +27,7 @@ public class NoteService {
      * Récupère toutes les notes
      * @return Liste de toutes les notes
      */
+    @Cacheable("notes")
     public List<NoteResponseDTO> getAllNotes() {
         return noteRepository.findAll().stream()
                 .map(this::convertToDTO)
@@ -37,6 +40,7 @@ public class NoteService {
      * @return La note trouvée
      * @throws ResponseStatusException si la note n'existe pas
      */
+    @Cacheable(value = "note", key = "#id")
     public NoteResponseDTO getNoteById(String id) {
         Note note = findNoteById(id);
         return convertToDTO(note);
@@ -47,6 +51,7 @@ public class NoteService {
      * @param idPatient L'identifiant du patient
      * @return Liste des notes du patient
      */
+    @Cacheable(value = "patient_notes", key = "#idPatient")
     public List<NoteResponseDTO> getNotesByPatientId(Integer idPatient) {
         return noteRepository.findByIdPatient(idPatient).stream()
                 .map(this::convertToDTO)
@@ -58,6 +63,7 @@ public class NoteService {
      * @param noteRequest Les données de la note à ajouter
      * @return La note ajoutée
      */
+    @CacheEvict(value = {"notes", "note", "patient_notes"}, allEntries = true)
     public NoteResponseDTO addNote(NoteRequestDTO noteRequest) {
         Note note = new Note();
         note.setIdPatient(noteRequest.getIdPatient());
@@ -76,6 +82,7 @@ public class NoteService {
      * @return La note mise à jour
      * @throws ResponseStatusException si la note n'existe pas
      */
+    @CacheEvict(value = {"notes", "note", "patient_notes"}, allEntries = true)
     public NoteResponseDTO updateNote(String id, NoteRequestDTO noteRequest) {
         // Vérifier que la note existe
         Note existingNote = findNoteById(id);
@@ -95,6 +102,7 @@ public class NoteService {
      * @param id L'identifiant de la note à supprimer
      * @throws ResponseStatusException si la note n'existe pas
      */
+    @CacheEvict(value = {"notes", "note", "patient_notes"}, allEntries = true)
     public void deleteNote(String id) {
         // Vérifier que la note existe
         Note note = findNoteById(id);

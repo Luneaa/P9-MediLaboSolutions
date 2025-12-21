@@ -2,6 +2,7 @@ package com.medilabo.evaluation.service;
 
 import com.medilabo.evaluation.dto.RiskAssessmentRequest;
 import com.medilabo.evaluation.model.RiskLevel;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,6 +30,7 @@ public class RiskAssessmentService {
             "Anticorps"
     );
 
+    @Cacheable(value = "risk", key = "#request.hashCode()")
     public RiskLevel assessRisk(RiskAssessmentRequest request) {
         if (request.getBirthDate() == null || request.getGender() == null) {
             return RiskLevel.NONE; // Or throw exception, but safe default

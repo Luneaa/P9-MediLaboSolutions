@@ -2,6 +2,8 @@ package com.medilabo.patient.service;
 
 import com.medilabo.patient.model.Patient;
 import com.medilabo.patient.repository.PatientRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,10 +18,12 @@ public class PatientService {
         this.patientRepository = patientRepository;
     }
 
+    @Cacheable("patients")
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
     }
 
+    @Cacheable(value = "patient", key = "#id")
     public Patient getPatientById(int id) {
         var patient = patientRepository.findById(id).orElse(null);
 
@@ -30,10 +34,12 @@ public class PatientService {
         return patient;
     }
 
+    @CacheEvict(value = {"patients", "patient"}, allEntries = true)
     public Patient addPatient(Patient patient) {
         return patientRepository.save(patient);
     }
 
+    @CacheEvict(value = {"patients", "patient"}, allEntries = true)
     public Patient updatePatient(int id, Patient patient) {
         // Verify patient exists
         Patient existingPatient = getPatientById(id);
@@ -49,6 +55,7 @@ public class PatientService {
         return patientRepository.save(existingPatient);
     }
 
+    @CacheEvict(value = {"patients", "patient"}, allEntries = true)
     public void deletePatient(int id) {
         // Verify patient exists
         Patient patient = getPatientById(id);
