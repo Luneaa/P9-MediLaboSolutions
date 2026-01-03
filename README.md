@@ -160,6 +160,19 @@ Gateway (Port 8080)
     └─→ Evaluation Service (Port 9092)
 ```
 
+## 🌿 Green Code
+
+Le projet essaye de suivre les bonnes pratiques de développement durable en informatique, en optimisant les performances et en minimisant l'empreinte carbone.
+
+Dans ce cadre, il a été mis en place un système de **cache** pour limiter les appels aux bases de données inutilement.
+
+### 🍃 Pistes d'améliorations pour l'empreinte carbone
+- Mise en veille automatique des services inactifs
+- Optimisation des requêtes aux bases de données
+- Réduction de la consommation mémoire
+- À l'avenir si l'application manipule des images ou autres médias, utiliser des formats optimisés (`WebP`, `AVIF`, etc.)
+- Surveillance de la consommation énergétique des services pour identifier rapidement les points d'amélioration
+
 ## 📝 Licence
 
 Copyright © 2025 MédiLabo Solutions - Tous droits réservés
